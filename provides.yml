@@ -1,0 +1,18 @@
+client_tabs:
+    macos_security_compliance-tab:
+        view: macos_security_compliance_tab
+        i18n: macos_security_compliance.security_compliance
+        badge: macos_security_compliance-cnt
+listings:
+    macos_security_compliance:
+        view: macos_security_compliance_listing
+        i18n: macos_security_compliance.security_compliance
+reports:
+    macos_security_compliance_report:
+        view: macos_security_compliance_report
+        i18n: macos_security_compliance.report
+widgets:
+    macos_security_compliance_percent:
+        view: macos_security_compliance_percent_widget
+    macos_security_compliance_baseline:
+        view: macos_security_compliance_baseline_widget

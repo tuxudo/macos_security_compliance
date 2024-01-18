@@ -1,0 +1,17 @@
+i18n_title: macos_security_compliance.report
+js_link: module/macos_security_compliance/js/macos_security_compliance
+not_null_column: baseline
+table:
+  - column: machine.computer_name
+    i18n_header: listing.computername
+    formatter: clientDetail
+    tab_link: macos_security_compliance-tab
+  - column: reportdata.serial_number
+    i18n_header: serial
+  - {i18n_header: macos_security_compliance.last_compliance_check, column: macos_security_compliance.last_compliance_check, formatter: timestampToMoment}
+  - {i18n_header: macos_security_compliance.baseline, column: macos_security_compliance.baseline}
+  - {i18n_header: macos_security_compliance.compliant, column: macos_security_compliance.compliant, formatter: formatsecurity_compliance_Compliant}
+  - {i18n_header: macos_security_compliance.fails, column: macos_security_compliance.fails, formatter: formatsecurity_compliance_Fails}
+  - {i18n_header: macos_security_compliance.passes, column: macos_security_compliance.passes, formatter: formatsecurity_compliance_Passes}
+  - {i18n_header: macos_security_compliance.exempt, column: macos_security_compliance.exempt, formatter: formatsecurity_compliance_Exempt}
+  - {i18n_header: macos_security_compliance.total, column: macos_security_compliance.total, formatter: formatsecurity_compliance_Total}

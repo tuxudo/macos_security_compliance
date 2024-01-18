@@ -1,0 +1,9 @@
+type: scrollbox
+widget_id: macos-security-compliance-baseline-widget
+api_url: /module/macos_security_compliance/get_scroll_widget/baseline
+i18n_title: macos_security_compliance.baseline_widget
+icon: fa-fort-awesome
+listing_link: /show/listing/macos_security_compliance/macos_security_compliance
+search_key: baseline
+badge: count
+i18n_empty_result: no_clients

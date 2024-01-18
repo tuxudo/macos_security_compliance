@@ -1,0 +1,121 @@
+#!/usr/local/munkireport/munkireport-python3
+
+import os
+import sys
+import re
+import glob
+import time
+import datetime
+import json
+
+from Foundation import CFPreferencesCopyAppValue
+
+sys.path.insert(0, '/usr/local/munkireport')
+
+from munkilib import FoundationPlist
+
+def get_audit():
+
+    # Check if we have the audit file preference
+    audit_level_pref = '/Library/Preferences/org.'+str(get_pref_value('macos_security_compliance_baseline', 'MunkiReport'))+'.audit.plist'
+
+    # Does the specified audit file exist
+    if os.path.isfile(audit_level_pref):
+        return audit_level_pref
+    else:
+        try:
+            # If it doesn't exist try to guess which is the correct one
+            list_of_files = glob.glob('/Library/Preferences/org.*.audit.plist')
+            audit_level = max(list_of_files, key=os.path.getctime)
+            return audit_level
+        except:
+            return False
+
+def process_audit(audit):
+
+    baseline = audit.replace("/Library/Preferences/org.", "").replace(".audit.plist", "")
+    fails = 0
+    passes = 0
+    exempt = 0
+    total = 0
+
+    out_json = {}
+    out = {'baseline': baseline}
+    pl = FoundationPlist.readPlist(audit)
+
+    for item in pl:
+        if item == 'lastComplianceCheck':
+            out['last_compliance_check'] = str(int(time.mktime(datetime.datetime.strptime(pl[item], "%a %b %d %H:%M:%S %Z %Y").timetuple())))
+        else:
+            total += 1
+            try:
+                out_json[item] = {}
+                out_json[item]['finding'] = pl[item]['finding']
+                if pl[item]['finding']:
+                    fails += 1 # True is non-compliant
+                else:
+                    passes += 1 # False is compliant
+
+                try:
+                    item_pref = get_pref_value(item, 'org.'+baseline+'.audit')
+                    if "exempt" in item_pref:
+                        exempt += 1
+                        out_json[item]['exempt'] = item_pref["exempt"]
+                    if "exempt_reason" in item_pref:
+                        out_json[item]['exempt_reason'] = item_pref["exempt_reason"]
+                except:
+                    pass
+            except:
+                pass
+
+    out['fails'] = fails
+    out['passes'] = passes
+    out['exempt'] = exempt
+    out['total'] = total
+
+    compliant = ((passes+exempt)/total)*100
+    out['compliant'] = str(round(compliant, 2))
+
+    # Encode the compliance rules as a JSON for processing by the client tab
+    out['compliance_json'] = json.dumps(out_json)
+
+
+    # print("Failed")
+    # print(out['fails'])
+    # print(" ")
+    # print("Passed")
+    # print(out['passes'])
+    # print(" ")
+    # print(out['compliant'])
+
+    return out
+
+def get_pref_value(key, domain):
+
+    value = CFPreferencesCopyAppValue(key, domain)
+
+    if(value is not None):
+        return value
+    elif(value is not None and len(value) == 0 ):
+        return ""
+    else:
+        return ""
+
+def main():
+    """Main"""
+
+    # Get and process the latest security compliance audit
+    audit = get_audit()
+    if audit is False:
+        print("Warning: macOS Security Compliance audit not found!")
+        exit()
+
+    result = process_audit(audit)
+    
+    # Write macOS Security Compliance results to cache
+    cachedir = '%s/cache' % os.path.dirname(os.path.realpath(__file__))
+    output_plist = os.path.join(cachedir, 'macos_security_compliance.plist')
+    FoundationPlist.writePlist(result, output_plist)
+
+if __name__ == "__main__":
+    main()
