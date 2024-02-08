@@ -1,8 +1,8 @@
 var formatsecurity_compliance_Compliant = function(colNumber, row){
     var col = $('td:eq('+colNumber+')', row),
         colvar = col.text();
-    if (colvar == "100"){
-        colvar = '<span class="label label-success">'+colvar+'%</span>'
+    if (colvar == "100" || colvar == "100.0"){
+        colvar = '<span class="label label-success">100%</span>'
     } else if (colvar >= "90"){
         colvar = '<span class="label label-info">'+colvar+'%</span>'
     } else if (colvar >= "75"){

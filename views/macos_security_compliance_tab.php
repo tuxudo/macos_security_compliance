@@ -29,8 +29,8 @@ $(document).on('appReady', function(){
                        // Do nothing for empty values to blank them
 
                     // Add proper label to compliance
-                    } else if(prop == 'compliant' && d[prop] == 100){
-                       rows = rows + '<tr><th>'+i18n.t('macos_security_compliance.'+prop)+'</th><td><span class="label label-success">'+d[prop]+'%</span></td></tr>';
+                    } else if(prop == 'compliant' && (d[prop] == 100 || d[prop] == "100.0")){
+                       rows = rows + '<tr><th>'+i18n.t('macos_security_compliance.'+prop)+'</th><td><span class="label label-success">100%</span></td></tr>';
                         $('#macos_security_compliance-cnt').text(d[prop]+"%").addClass('alert-success');
                     } else if(prop == 'compliant' && d[prop] >= 90){
                        rows = rows + '<tr><th>'+i18n.t('macos_security_compliance.'+prop)+'</th><td><span class="label label-info">'+d[prop]+'%</span></td></tr>';
