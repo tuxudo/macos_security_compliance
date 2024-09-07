@@ -45,7 +45,6 @@ def process_audit(audit):
 
     for item in pl:
         if item == 'lastComplianceCheck':
-            # Update date format here
             out['last_compliance_check'] = str(int(time.mktime(datetime.datetime.strptime(pl[item], "%Y-%m-%d %H:%M:%S%z").timetuple())))
         else:
             total += 1
@@ -79,6 +78,15 @@ def process_audit(audit):
 
     # Encode the compliance rules as a JSON for processing by the client tab
     out['compliance_json'] = json.dumps(out_json)
+
+
+    # print("Failed")
+    # print(out['fails'])
+    # print(" ")
+    # print("Passed")
+    # print(out['passes'])
+    # print(" ")
+    # print(out['compliant'])
 
     return out
 
