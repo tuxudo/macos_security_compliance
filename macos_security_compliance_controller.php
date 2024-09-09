@@ -87,7 +87,9 @@ class Macos_security_compliance_controller extends Module_controller
 
         $sql = "SELECT `last_compliance_check`, `baseline`, `compliant`, `fails`, `passes`, `exempt`, `total`, `compliance_json`
                     FROM macos_security_compliance 
-                    WHERE serial_number = '$serial_number'";
+                    LEFT JOIN reportdata USING (serial_number)
+                    ".get_machine_group_filter()."
+                    AND serial_number = '$serial_number'";
         
         $queryobj = new Macos_security_compliance_model();
         $macos_security_compliance_tab = $queryobj->query($sql);

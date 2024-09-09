@@ -45,7 +45,14 @@ def process_audit(audit):
 
     for item in pl:
         if item == 'lastComplianceCheck':
-            out['last_compliance_check'] = str(int(time.mktime(datetime.datetime.strptime(pl[item], "%a %b %d %H:%M:%S %Z %Y").timetuple())))
+            try:
+                out['last_compliance_check'] = str(int(time.mktime(datetime.datetime.strptime(pl[item], "%Y-%m-%d %H:%M:%S%z").timetuple()))) # Sonoma baselines v3.0 and newer
+            except:
+                try:
+                    out['last_compliance_check'] = str(int(time.mktime(datetime.datetime.strptime(pl[item], "%a %b %d %H:%M:%S %Z %Y").timetuple()))) # Ventura and older, US local only
+                except:
+                    out['last_compliance_check'] = str(int(os.path.getmtime(audit))) # Use file last modified time
+
         else:
             total += 1
             try:
